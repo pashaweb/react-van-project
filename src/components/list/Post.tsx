@@ -1,15 +1,13 @@
-import { PostProps } from './types';
-import { useEffect, useState } from 'react';
+import { PostProps, TPost } from './types';
+import Stars from '@/components/stars/Stars';
 
-export const Post = (props: PostProps) => {
-  useEffect(() => {
-    console.log(`Post ${props.id} useEffect`);
-  }, []);
+export const Post = (props: TPost) => {
+  const rate = Math.floor(Math.random() * 5);
   return (
     <>
-      <div>{props.title}</div>
-      <div> {props.content}</div>
-      <div> {props.published}</div>
+      <h2>{props.title}</h2>
+      <p> {props.body}</p>
+      <Stars count={5} initialRate={rate} />
     </>
   );
 };

@@ -4,7 +4,19 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    background-color: var(--blue-400);
-    border-radius:  0.25rem;
 
+}
+.vans-list-item {
+    position: relative;
+    display: block;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #ebedf0;
+    background-color: #fff;
+    color: #303133;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: left;
+    cursor: pointer;
+    transition: all .3s;
 }

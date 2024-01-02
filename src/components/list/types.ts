@@ -1,7 +1,6 @@
 export type TPost = {
   id: string;
   title: string;
-  content: string;
-  published: boolean;
+  body: string;
 };
 export type PostProps = TPost & {};

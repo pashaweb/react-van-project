@@ -1,45 +1,45 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { TPost } from './types';
 
-export function useListHook() {
-  const posts = useRef<TPost[]>([]);
-  const [veiwPosts, setVeiwPosts] = useState<TPost[]>(posts.current);
+type TAction =
+  | {
+      type: 'ADD' | 'UPDATE';
+      payload: TPost;
+    }
+  | {
+      type: 'ADD_ALL';
+      payload: TPost[];
+    };
 
-  useEffect(() => {
-    const time = setTimeout(() => {
-      const updatePostIndex = posts.current.findIndex(
-        (post) => post.id === '1'
+type TReducer = (state: TPost[], action: any) => TPost[];
+const reducer: TReducer = (state, action: TAction) => {
+  switch (action.type) {
+    case 'ADD_ALL':
+      return [...state, ...action.payload];
+    case 'ADD':
+      return [...state, action.payload];
+    case 'UPDATE':
+      const updatePostIndex = state.findIndex(
+        (post) => post.id === action.payload.id
       );
-      const updatePost = posts.current[updatePostIndex];
-      updatePost.title = 'Prisma is the best';
-      const newPosts = [...posts.current];
+      const updatePost = state[updatePostIndex];
+      updatePost.title = action.payload.title;
+      const newPosts = [...state];
       newPosts[updatePostIndex] = updatePost;
-      console.log(newPosts);
-      posts.current = newPosts;
-      setVeiwPosts(newPosts);
-    }, 2000);
-    return () => {
-      clearTimeout(time);
-    };
-  }, []);
+      return newPosts;
+    default:
+      return state;
+  }
+};
 
+export function useListHook() {
+  const [posts, dispatch] = useReducer(reducer, []);
   useEffect(() => {
-    const time = setTimeout(() => {
-      posts.current = [
-        ...posts.current,
-        {
-          id: '1',
-          title: 'Prisma is the best',
-          content: '[Prisma]',
-          published: false,
-        },
-      ];
-      setVeiwPosts(posts.current);
-    }, 500);
-
-    return () => {
-      clearTimeout(time);
-    };
+    fetch('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch({ type: 'ADD_ALL', payload: data });
+      });
   }, []);
-  return [veiwPosts];
+  return { posts };
 }
